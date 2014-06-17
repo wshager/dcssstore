@@ -88,3 +88,8 @@ require([
 
 ### Note changes in respect to dojox/data/CssRuleStore
 
+CssRules is a replacement for dojox/data/CssRuleStore. The model has been adapted to dojo/store, but other things have changed as well:
+
+* The query always returns the rules themselves, not an array of container items.
+* Most query attributes are no longer supported, as they can be inspected on the rules.
+
