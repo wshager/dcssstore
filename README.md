@@ -33,7 +33,7 @@ Use this mixin to have the query (string or object) match a wildcard pattern.
 Example
 =======
 
-{{{
+```javascript
 require([
 	"dojo/_base/declare",
 	"dcssstore/CssRules",
@@ -55,4 +55,4 @@ require([
 	// to remove a style from the document:
 	rulestore.remove(".clazz");
 });
-}}}
+```
