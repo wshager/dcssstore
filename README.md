@@ -22,16 +22,18 @@ Property | Description
 Property | Description
 -------- | -----------
 `query(query,[directives])` | Query by selector string, returns a dojo/Promise that resolves to an array of matching CSS rules.
-`add(object/string,[directives])` |  Add a CSS rule. Note: this won't check if the rule already exists!
-`put(object/string,[directives])` | Add a CSS rule if it doesn't exist, or update an existing rule.
+`add(data[1],[directives])` |  Add a CSS rule. Note: this won't check if the rule already exists!
+`put(data[1],[directives])` | Add a CSS rule if it doesn't exist, or update an existing rule.
 `remove(selector,[directives])` | Removes a css rule based on a selector.
 
-Add/put expect a string or object as first argument:
-* an object with selector+style object
-* an oject with selector+style string (like a style declaration)
-* or simply a string (like cssText)
+[1] Add/put handles data as either a string (like cssText) or an object, where: 
+Property | Description
+-------- | -----------
+`selector` | A string holding the selector text of the rule to add/update.
+`style` | Either a string (like a style declaration) or a HTML DOM style object.
 
-### Add/put/remove directives
+
+#### Add/put/remove directives
 
 Property | Description
 -------- | -----------
