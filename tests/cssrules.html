@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>dcssstore/CssRules Test</title>
+		<link rel="stylesheet" href="test.css">
+		<script src="../../../dojo/dojo.js" djConfig="async:true,parseOnLoad:true"></script>
+		
+		<script type="text/javascript">
+			require([
+				"dcssstore/CssRules"
+			], function(CssRules){
+				var css = new CssRules({
+					target:"test.css"
+				});
+				css.query({selector:"#test"}).then(function(res){
+					console.log(res)
+				});
+				css.put({selector:".clazz",style:{
+					color:"red",
+					fontSize:"16px"
+				}}).then(function(res){
+					console.log(res)
+				});
+				setTimeout(function(){
+					css.remove(".clazz");
+				},2000)
+			});
+		</script>
+	
+	</head>
+	<body>
+		<p class="clazz">dcssstore/CssRules Test!</p>
+	</body>
+</html>
