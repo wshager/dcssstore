@@ -2,29 +2,33 @@
 <html lang="en">
 	<head>
 		<title>dcssstore/CssRules Test</title>
-		<link rel="stylesheet" href="test.css">
-		<script src="../../../dojo/dojo.js" djConfig="async:true,parseOnLoad:true"></script>
+		<link rel="stylesheet" href="styles.css">
+		<script src="../../dojo/dojo.js" djConfig="async:true,parseOnLoad:true"></script>
 		
 		<script type="text/javascript">
-			require([
-				"dcssstore/CssRules"
-			], function(CssRules){
-				var css = new CssRules({
-					target:"test.css"
-				});
-				css.query({selector:"#test"}).then(function(res){
-					console.log(res)
-				});
-				css.put({selector:".clazz",style:{
-					color:"red",
-					fontSize:"16px"
-				}}).then(function(res){
-					console.log(res)
-				});
-				setTimeout(function(){
-					css.remove(".clazz");
-				},2000)
-			});
+		require([
+		     	"dojo/_base/declare",
+		     	"dcssstore/CssRules",
+		     	"dcssstore/_QueryMixin",
+		     	"dcssstore/_PatternMixin"
+		     ], function(declare,CssRules,_QueryMixin,_PatternMixin){
+		     	var rulestore = new declare([CssRules,_QueryMixin,_PatternMixin])({
+		     		target:"styles.css"
+		     	});
+		     	// to query by styleText:
+		     	rulestore.query({"cssText":"*color*"}).then(function(rules){
+		     		console.log(rules);
+		     	});
+		     	// to add a style to the document:
+		     	rulestore.put({selector:".clazz",style:{
+		     		color:"red",
+		     		fontSize:"16px"
+		     	}});
+		     	// to remove a style from the document:
+		     	setTimeout(function(){
+		     		rulestore.remove(".clazz");
+		     	},2000);
+		     });
 		</script>
 	
 	</head>
