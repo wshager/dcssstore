@@ -5,7 +5,7 @@ A bundle of CSS stores for use with dojo, based on the dojo/store API.
 
 ## CssRules
 
-Query and update CSS in a document like you would use a [dojo store](/SitePen/dstore).
+Query and update CSS in a document like you would use a [dojo store](https://github.com/SitePen/dstore).
 
 
 ### Property Summary
