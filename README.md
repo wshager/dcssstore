@@ -32,19 +32,19 @@ Add/put expect a string or object as first argument:
 * or simply a string (like cssText)
 
 Add/put/remove directives:
-* styleSheetName: the stylesheet to use when adding/updating/removing css rules
-* overwrite: a boolean indicating that the existing rule with the provided selector is to be overwritten.
-* existingRule: update styles for this specific rule.
-* property: in case of remove, remove this property only. 
+* `styleSheetName`: the stylesheet to use when adding/updating/removing css rules
+* `overwrite`: a boolean indicating that the existing rule with the provided selector is to be overwritten.
+* `existingRule`: update styles for this specific rule. When this is set, `overwrite` will be ignored.
+* `property`: in case of remove, remove this property only. 
 
 
 ## _QueryMixin
 
 Expand the query to an object, using one or more of the following keys:
 
-* selector: the selector text to match.
-* cssText: the cssText to match (requires the _PatternMixin to match on globbing patterns).
-* style./attr/: match an attribute in the style object.
+* `selector`: the selector text to match.
+* `cssText`: the cssText to match (requires the _PatternMixin to match on globbing patterns).
+* `style.*attr*`: match an attribute in the style object.
 
 
 ## _PatternMixin
