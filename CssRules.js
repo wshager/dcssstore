@@ -50,61 +50,80 @@ define([
 				}
 			}),250);
 		},
-		get: function(id){
+		put: function(data, directives){
+			directives = directives || {};
+			directives.overwrite = true;
+			return this.add(data,directives);
 		},
-		getIdentity: function(object){
-		},
-		add: function(object, directives){
-			return this.put(object, directives);
-		},
-		put: function(object, directives){
+		add: function(data, directives){
 			directives = directives || {};
 			var d = new Deferred();
 			if(!this._deferredLoad.isResolved()){
 				this._deferredLoad.then(lang.hitch(this,function(){
-					this._put(object, directives, d);
+					this._add(data, directives, d);
 				}));
 			}else{
-				this._put(object, directives, d);
+				this._add(data, directives, d);
 			}
 			return d;
 		},
-		_put: function(object, directives,d){
-			var styleText = typeof object == "string" ? object : "";
+		_add: function(data, directives,d){
+			var isString = typeof data == "string";
+			var cssText = isString ? data : "";
+			var object = isString ? {} : data;
 			var selector = object.selector;
 			var style = object.style;
-			var declaration = "";
-			if(object.style) {
-				if(typeof object.style == "string") {
-					declaration = object.style;
-				} else {
-					for(var k in object.style) {
-						if(isNaN(parseInt(k,10)) && k!="cssText" && k!="length") {
-							var v = object.style[k];
-							var rule = js2css(k);
+			
+			if(directives.overwrite && !directives.existingRule && selector) {
+				// retrieve existing rule
+				this.query(selector).then(lang.hitch(this,function(rules){
+					directives.existingRule = rules.pop();
+					this._add(data,directives,d);
+				}));
+				return;
+			}
+			
+			if(directives.existingRule && directives.existingRule.selectorText===selector) {
+				if(typeof style == "string") {
+					directives.existingRule.cssText = cssText ? cssText : selector + " {" + style + "}";
+				} else if(typeof style == "object") {
+					for(var k in style) {
+						var v = style[k];
+						var prop = css2js(k);
+						directives.existingRule.style[prop] = v;
+					}
+				}
+				var sheet = this.target ? this.getStyleSheet(this.target) : this.getStyleSheet(directives.styleSheetName);
+				d.resolve(data);
+			} else {
+				var declaration = "";
+				if(style) {
+					if(typeof style == "string") {
+						declaration = style;
+					} else if(typeof style == "object") {
+						for(var k in style) {
+							var v = style[k];
+							var prop = js2css(k);
 							if(typeof v != "function" && typeof v !="object") {
-								declaration += rule+":"+v+";";
+								declaration += prop+":"+v+";";
 							}
 						}
 					}
 				}
-			} else {
-				declaration = object.declaration;
-			}
-			
-			var sheet = this.target ? this.getStyleSheet(this.target) : this.getStyleSheet(directives.styleSheetName);
-			styleText = styleText ? styleText : selector + " {" + declaration + "}";
-			if(!sheet) {
-				// insert new style element (href = null)
-				sheet = createSheet(this.document);
-				this.resolvedContext.push(sheet);
-			}
-			if(sheet.insertRule){
-				sheet.insertRule(styleText, 0);
-				d.resolve(object);
-			} else {
-				throw new Error("CSS insertRule not supported by this browser");
-				d.reject(object);
+				var sheet = this.target ? this.getStyleSheet(this.target) : this.getStyleSheet(directives.styleSheetName);
+				cssText = cssText ? cssText : selector + " {" + declaration + "}";
+				if(!sheet) {
+					// insert new style element (href = null)
+					sheet = createSheet(this.document);
+					this.resolvedContext.push(sheet);
+				}
+				if(sheet.insertRule){
+					sheet.insertRule(cssText, 0);
+					d.resolve(data);
+				} else {
+					throw new Error("CSS insertRule not supported by this browser");
+					d.reject(data);
+				}
 			}
 		},
 		remove: function(selector, directives){
@@ -112,7 +131,7 @@ define([
 			var d = new Deferred();
 			if(!this._deferredLoad.isResolved()){
 				this._deferredLoad.then(lang.hitch(this,function(){
-					this._put(object, directives, d);
+					this._remove(object, directives, d);
 				}));
 			}else{
 				this._remove(selector, directives, d);
