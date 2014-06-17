@@ -41,7 +41,8 @@ Property | Description
 `styleSheetName` | The stylesheet to use when adding/updating/removing css rules
 `overwrite` | A boolean indicating that the existing rule with the provided selector is to be overwritten.
 `existingRule` | Update styles for this specific rule. When this is set, `overwrite` will be ignored.
-`property` | In case of remove, remove this property only. 
+`property` | In case of remove, remove this property only.
+`properties` | In case of remove, remove these property only (array).
 
 
 ## _QueryMixin
@@ -86,7 +87,7 @@ require([
 });
 ```
 
-### Note changes in respect to dojox/data/CssRuleStore
+### Changes in respect to dojox/data/CssRuleStore
 
 CssRules is a replacement for dojox/data/CssRuleStore. The model has been adapted to dojo/store, but other things have changed as well:
 
