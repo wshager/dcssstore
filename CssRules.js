@@ -68,12 +68,12 @@ define([
 			return d;
 		},
 		_add: function(data, directives,d){
-			var isString = typeof data == "string";
+			var isString = typeof data === "string";
 			var cssText = isString ? data : "";
 			var object = isString ? {} : data;
 			var selector = object.selector;
 			var style = object.style;
-			
+			var sheet,key,prop;
 			// ignore overwrite
 			if(directives.existingRule) directives.overwrite = false;
 			
@@ -86,18 +86,16 @@ define([
 				}));
 				return;
 			}
-			
 			if(directives.existingRule && directives.existingRule.selectorText===selector) {
 				if(typeof style == "string") {
 					directives.existingRule.cssText = cssText ? cssText : selector + " {" + style + "}";
 				} else if(typeof style == "object") {
-					for(var k in style) {
-						var v = style[k];
-						var prop = css2js(k);
-						directives.existingRule.style[prop] = v;
+					for(key in style) {
+						prop = css2js(key);
+						directives.existingRule.style[prop] = style[key];
 					}
 				}
-				var sheet = this.target ? this.getStyleSheet(this.target) : this.getStyleSheet(directives.styleSheetName);
+				sheet = this.target ? this.getStyleSheet(this.target) : this.getStyleSheet(directives.styleSheetName);
 				d.resolve(data);
 			} else {
 				var declaration = "";
@@ -105,16 +103,13 @@ define([
 					if(typeof style == "string") {
 						declaration = style;
 					} else if(typeof style == "object") {
-						for(var k in style) {
-							var v = style[k];
-							var prop = js2css(k);
-							if(typeof v != "function" && typeof v !="object") {
-								declaration += prop+":"+v+";";
-							}
+						for(key in style) {
+							prop = js2css(key);
+							declaration += prop+":"+style[key]+";";
 						}
 					}
 				}
-				var sheet = this.target ? this.getStyleSheet(this.target) : this.getStyleSheet(directives.styleSheetName);
+				sheet = this.target ? this.getStyleSheet(this.target) : this.getStyleSheet(directives.styleSheetName);
 				cssText = cssText ? cssText : selector + " {" + declaration + "}";
 				if(!sheet) {
 					// insert new style element (href = null)
@@ -125,8 +120,7 @@ define([
 					sheet.insertRule(cssText, 0);
 					d.resolve(data);
 				} else {
-					throw new Error("CSS insertRule not supported by this browser");
-					d.reject(data);
+					d.reject(new Error("CSS insertRule not supported by this browser"));
 				}
 			}
 		},
@@ -144,17 +138,14 @@ define([
 		},
 		_remove: function(selector, directives,d){
 			var sheet = this.target ? this.getStyleSheet(this.target) : this.getStyleSheet(directives.styleSheetName);
-			var declaration = directives.declaration;
+			var properties = directives.properties ? directives.properties : directives.property ? [directives.property] : [];
 			var index = -1;
 			for(var i=0;i<sheet.cssRules.length;i++) {
-				if(sheet.cssRules[i].selectorText==selector) {
-					if(declaration && sheet.cssRules[i].style[declaration]) {
-						if(isNaN(parseInt(declaration,10)) && declaration!="cssText" && declaration!="length") {
-							var v = sheet.cssRules[i].style[declaration];
-							if(v && typeof v != "function" && typeof v !="object") {
-								sheet.cssRules[i].style[declaration] = "";
-							}
-						}
+				if(sheet.cssRules[i].selectorText===selector) {
+					if(properties.length>0) {
+						array.forEach(properties,function(property){
+							delete sheet.cssRules[i].style[property];
+						});
 					} else {
 						index = i;
 					}
@@ -164,7 +155,7 @@ define([
 			if(index>-1) {
 				sheet.deleteRule(index);
 			}
-			d.resolve(); //Boolean
+			d.resolve();
 		},
 		query: function(query, options){
 			options = options || {};
