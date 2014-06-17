@@ -3,21 +3,40 @@ dcssstore
 
 A bundle of CSS stores for use with dojo, based on the dojo/store API.
 
-CssRules
-=========
+# CssRules
 
-Query and update CSS in a document like you would use a store:
-
-* query: query by selector string, returns a dojo/Promise that resolves to an array of matching CSS rules.
-* add/put: create a new CSS rule based on:
-  * an object with selector+style object
-  * an oject with selector+declaration text
-  * or simply a string (cssText)
-* remove: removes a css rule based on a selector.
+Query and update CSS in a document like you would use a [dojo store](/SitePen/dstore).
 
 
-_QueryMixin
-=============
+### Property Summary
+
+Property | Description
+-------- | -----------
+`context` | An array of stylesheets to query. By default all available stylesheets will be used.
+`target` | A single stylesheet to query. Will be used for add/put/remove. If not available an empty style element will be created upon first add/put.
+`document` | The target document element to handle stylesheets from.
+
+
+### method Summary
+
+Property | Description
+-------- | -----------
+`query(query,[directives])` | Query by selector string, returns a dojo/Promise that resolves to an array of matching CSS rules.
+`add(object|string,[directives])` |  Add a CSS rule. Note: this won't check if the rule already exists!
+`put(object|string,[directives])` | Add a CSS rule if it doesn't exist, or update an existing rule.
+`remove(selector,[directives])` | Removes a css rule based on a selector.
+
+Add/put expect a string or object as first argument:
+* an object with selector+style object
+* an oject with selector+declaration text
+* or simply a string (cssText)
+
+Add/put/remove directives:
+* styleSheetName: the stylesheet to use when adding/updating/removing css rules
+
+
+# _QueryMixin
+
 Expand the query to an object, using one or more of the following keys:
 
 * selector: the selector text to match.
@@ -25,13 +44,12 @@ Expand the query to an object, using one or more of the following keys:
 * style./attr/: match an attribute in the style object.
 
 
-_PatternMixin
-=============
+# _PatternMixin
 
 Use this mixin to have the query (string or object) match a wildcard pattern.
 
-Example
-=======
+
+# Example
 
 ```javascript
 require([
