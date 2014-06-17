@@ -3,7 +3,7 @@ dcssstore
 
 A bundle of CSS stores for use with dojo, based on the dojo/store API.
 
-# CssRules
+## CssRules
 
 Query and update CSS in a document like you would use a [dojo store](/SitePen/dstore).
 
@@ -35,7 +35,7 @@ Add/put/remove directives:
 * styleSheetName: the stylesheet to use when adding/updating/removing css rules
 
 
-# _QueryMixin
+## _QueryMixin
 
 Expand the query to an object, using one or more of the following keys:
 
@@ -44,12 +44,12 @@ Expand the query to an object, using one or more of the following keys:
 * style./attr/: match an attribute in the style object.
 
 
-# _PatternMixin
+## _PatternMixin
 
 Use this mixin to have the query (string or object) match a wildcard pattern.
 
 
-# Example
+## Example
 
 ```javascript
 require([
