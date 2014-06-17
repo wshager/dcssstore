@@ -74,10 +74,14 @@ define([
 			var selector = object.selector;
 			var style = object.style;
 			
-			if(directives.overwrite && !directives.existingRule && selector) {
+			// ignore overwrite
+			if(directives.existingRule) directives.overwrite = false;
+			
+			if(directives.overwrite && selector) {
 				// retrieve existing rule
 				this.query(selector).then(lang.hitch(this,function(rules){
 					directives.existingRule = rules.pop();
+					directives.overwrite = false;
 					this._add(data,directives,d);
 				}));
 				return;
