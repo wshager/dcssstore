@@ -22,11 +22,11 @@ Property | Description
 Property | Description
 -------- | -----------
 `query(query,[directives])` | Query by selector string, returns a dojo/Promise that resolves to an array of matching CSS rules.
-`add(data[1],[directives])` |  Add a CSS rule. Note: this won't check if the rule already exists!
-`put(data[1],[directives])` | Add a CSS rule if it doesn't exist, or update an existing rule.
+`add(data,[directives])`[1] |  Add a CSS rule. Note: this won't check if the rule already exists!
+`put(data,[directives])`[1] | Add a CSS rule if it doesn't exist, or update an existing rule.
 `remove(selector,[directives])` | Removes a css rule based on a selector.
 
-[1] Add/put handles data as either a string (like cssText) or an object, where: 
+[1]: Add/put handles data as either a string (like cssText) or an object, where: 
 
 Property | Description
 -------- | -----------
@@ -50,7 +50,7 @@ Expand the query to an object, using one or more of the following keys:
 
 * `selector`: the selector text to match.
 * `cssText`: the cssText to match (requires the _PatternMixin to match on globbing patterns).
-* `style.*attr*`: match an attribute in the style object.
+* `style.attr`: match an attribute in the style object.
 
 
 ## _PatternMixin
