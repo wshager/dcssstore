@@ -42,7 +42,7 @@ Property | Description
 `overwrite` | A boolean indicating that the existing rule with the provided selector is to be overwritten.
 `existingRule` | Update styles for this specific rule. When this is set, `overwrite` will be ignored.
 `property` | In case of remove, remove this property only.
-`properties` | In case of remove, remove these property only (array).
+`properties` | In case of remove, remove these properties only (array).
 
 
 ## _QueryMixin
