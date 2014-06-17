@@ -64,14 +64,9 @@ define(["dojo/_base/array","dojo/_base/window"], function(array,win){
 			}
 			var _processSS = function(styleSheet){
 				ret.push(styleSheet);
-				if(styleSheet.imports){
-					array.forEach(styleSheet.imports, function(importedSS){ //IE stylesheet has imports[] containing @import'ed rules
-						_processSS(importedSS);
-					});
-				}
 				//iterate across rules in the stylesheet
 				array.forEach(styleSheet.cssRules, function(rule){
-					if(rule.type && rule.type === 3){// CSSImportRule (firefox)
+					if(rule.type && rule.type === 3){// CSSImportRule
 						_processSS(rule.styleSheet);
 					}
 				});
