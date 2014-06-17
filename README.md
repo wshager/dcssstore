@@ -28,11 +28,14 @@ Property | Description
 
 Add/put expect a string or object as first argument:
 * an object with selector+style object
-* an oject with selector+declaration text
-* or simply a string (cssText)
+* an oject with selector+style string (like a style declaration)
+* or simply a string (like cssText)
 
 Add/put/remove directives:
 * styleSheetName: the stylesheet to use when adding/updating/removing css rules
+* overwrite: a boolean indicating that the existing rule with the provided selector is to be overwritten.
+* existingRule: update styles for this specific rule.
+* property: in case of remove, remove this property only. 
 
 
 ## _QueryMixin
