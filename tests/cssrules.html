@@ -24,10 +24,16 @@
 		     		color:"red",
 		     		fontSize:"16px"
 		     	}});
+		     	setTimeout(function(){
+		     	rulestore.put({selector:".clazz",style:{
+		     		color:"blue",
+		     		fontSize:"16px"
+		     	}});
+		     	},2000);
 		     	// to remove a style from the document:
 		     	setTimeout(function(){
 		     		rulestore.remove(".clazz");
-		     	},2000);
+		     	},4000);
 		     });
 		</script>
 	
