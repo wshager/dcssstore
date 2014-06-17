@@ -17,7 +17,7 @@ Property | Description
 `document` | The target document element to handle stylesheets from.
 
 
-### method Summary
+### Method Summary
 
 Property | Description
 -------- | -----------
@@ -31,11 +31,14 @@ Add/put expect a string or object as first argument:
 * an oject with selector+style string (like a style declaration)
 * or simply a string (like cssText)
 
-Add/put/remove directives:
-* `styleSheetName`: the stylesheet to use when adding/updating/removing css rules
-* `overwrite`: a boolean indicating that the existing rule with the provided selector is to be overwritten.
-* `existingRule`: update styles for this specific rule. When this is set, `overwrite` will be ignored.
-* `property`: in case of remove, remove this property only. 
+### Add/put/remove directives
+
+Property | Description
+-------- | -----------
+`styleSheetName` | the stylesheet to use when adding/updating/removing css rules
+`overwrite` | a boolean indicating that the existing rule with the provided selector is to be overwritten.
+`existingRule` | update styles for this specific rule. When this is set, `overwrite` will be ignored.
+`property` | in case of remove, remove this property only. 
 
 
 ## _QueryMixin
