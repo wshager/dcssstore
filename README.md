@@ -38,19 +38,21 @@ Property | Description
 
 Property | Description
 -------- | -----------
-`styleSheetName` | the stylesheet to use when adding/updating/removing css rules
-`overwrite` | a boolean indicating that the existing rule with the provided selector is to be overwritten.
-`existingRule` | update styles for this specific rule. When this is set, `overwrite` will be ignored.
-`property` | in case of remove, remove this property only. 
+`styleSheetName` | The stylesheet to use when adding/updating/removing css rules
+`overwrite` | A boolean indicating that the existing rule with the provided selector is to be overwritten.
+`existingRule` | Update styles for this specific rule. When this is set, `overwrite` will be ignored.
+`property` | In case of remove, remove this property only. 
 
 
 ## _QueryMixin
 
-Expand the query to an object, using one or more of the following keys:
+Expand the query to an object, using one or more of the following properties:
 
-* `selector`: the selector text to match.
-* `cssText`: the cssText to match (requires the _PatternMixin to match on globbing patterns).
-* `style.attr`: match an attribute in the style object.
+Property | Description
+-------- | -----------
+`selector` | The selector text to match.
+`cssText` | The cssText to match (requires the _PatternMixin to match on globbing patterns).
+`style.attr` | Match an attribute in the style object.
 
 
 ## _PatternMixin
@@ -83,3 +85,6 @@ require([
 	rulestore.remove(".clazz");
 });
 ```
+
+### Note changes in respect to dojox/data/CssRuleStore
+
