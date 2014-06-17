@@ -144,7 +144,7 @@ define([
 				if(sheet.cssRules[i].selectorText===selector) {
 					if(properties.length>0) {
 						array.forEach(properties,function(property){
-							delete sheet.cssRules[i].style[property];
+							sheet.cssRules[i].style[property] = "";
 						});
 					} else {
 						index = i;
