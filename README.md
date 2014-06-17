@@ -93,3 +93,8 @@ CssRules is a replacement for dojox/data/CssRuleStore. The model has been adapte
 * The query always returns the rules themselves, not an array of container items.
 * Most query attributes are no longer supported, as they can be inspected on the rules.
 
+
+### TODO
+
+* Add _PersistMixin to be able to save the CSS target file to a remote location.
+* Add other types of CSS stores to support more specific subjects like classes, animations or transitions.
