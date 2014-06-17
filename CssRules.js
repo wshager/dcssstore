@@ -95,8 +95,9 @@ define([
 			var sheet = this.target ? this.getStyleSheet(this.target) : this.getStyleSheet(directives.styleSheetName);
 			styleText = styleText ? styleText : selector + " {" + declaration + "}";
 			if(!sheet) {
-				// insert new style element and add to context as this.target
+				// insert new style element (href = null)
 				sheet = createSheet(this.document);
+				this.resolvedContext.push(sheet);
 			}
 			if(sheet.insertRule){
 				sheet.insertRule(styleText, 0);
