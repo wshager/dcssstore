@@ -42,7 +42,7 @@ define(["dojo/_base/array","dojo/_base/window"], function(array,win){
 					});
 				}
 				//iterate across rules in the stylesheet
-				return array.some(styleSheet[styleSheet.cssRules?"cssRules":"rules"], function(rule){
+				return array.some(styleSheet.cssRules, function(rule){
 					if(rule.type && rule.type === 3 && _processSS(rule.styleSheet)){// CSSImportRule (firefox)
 						return true;
 					}
@@ -66,12 +66,11 @@ define(["dojo/_base/array","dojo/_base/window"], function(array,win){
 				ret.push(styleSheet);
 				if(styleSheet.imports){
 					array.forEach(styleSheet.imports, function(importedSS){ //IE stylesheet has imports[] containing @import'ed rules
-						//console.debug("Processing IE @import rule",importedSS);
 						_processSS(importedSS);
 					});
 				}
 				//iterate across rules in the stylesheet
-				array.forEach(styleSheet[styleSheet.cssRules?"cssRules":"rules"], function(rule){
+				array.forEach(styleSheet.cssRules, function(rule){
 					if(rule.type && rule.type === 3){// CSSImportRule (firefox)
 						_processSS(rule.styleSheet);
 					}
@@ -88,12 +87,11 @@ define(["dojo/_base/array","dojo/_base/window"], function(array,win){
 		if(context){
 			array.forEach(context,function(styleSheet){
 				//iterate across rules in the stylesheet
-				array.forEach(styleSheet[styleSheet.cssRules?"cssRules":"rules"], function(rule){
+				array.forEach(styleSheet.cssRules, function(rule){
 					if(!rule.type || rule.type !== 3){// apply fn to current rule
 						fn.call(this, rule, styleSheet);
 					}
 				});
-				//process any child stylesheets
 			});
 		}
 	};
