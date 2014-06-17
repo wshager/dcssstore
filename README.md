@@ -53,7 +53,7 @@ Property | Description
 -------- | -----------
 `selector` | The selector text to match.
 `cssText` | The cssText to match (requires the _PatternMixin to match on globbing patterns).
-`style.attr` | Match an attribute in the style object.
+`style.property` | Match a property in the style object.
 
 
 ## _PatternMixin
