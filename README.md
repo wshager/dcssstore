@@ -27,6 +27,7 @@ Property | Description
 `remove(selector,[directives])` | Removes a css rule based on a selector.
 
 [1] Add/put handles data as either a string (like cssText) or an object, where: 
+
 Property | Description
 -------- | -----------
 `selector` | A string holding the selector text of the rule to add/update.
