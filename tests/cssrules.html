@@ -15,25 +15,28 @@
 		     	var rulestore = new declare([CssRules,_QueryMixin,_PatternMixin])({
 		     		target:"styles.css"
 		     	});
-		     	// to query by styleText:
-		     	rulestore.query({"cssText":"*color*"}).then(function(rules){
-		     		console.log(rules);
+		     	// explicitly load store:
+		     	rulestore.open().then(function(){
+		     		var rules = rulestore.query({"cssText":"*color*"});
+			     	console.log(rules);
+			     	// to add a style to the document:
+			     	var rule = rulestore.put({selector:".clazz",style:{
+			     		color:"red",
+			     		fontSize:"16px"
+			     	}});
+			     	console.log(rule)
+			     	setTimeout(function(){
+				     	rulestore.put({selector:".clazz",style:{
+				     		color:"blue",
+				     		fontSize:"16px"
+				     	}});
+			     	},2000);
+			     	// to remove a style from the document:
+			     	setTimeout(function(){
+			     		rulestore.remove(".clazz");
+			     	},4000);
 		     	});
-		     	// to add a style to the document:
-		     	rulestore.put({selector:".clazz",style:{
-		     		color:"red",
-		     		fontSize:"16px"
-		     	}});
-		     	setTimeout(function(){
-		     	rulestore.put({selector:".clazz",style:{
-		     		color:"blue",
-		     		fontSize:"16px"
-		     	}});
-		     	},2000);
-		     	// to remove a style from the document:
-		     	setTimeout(function(){
-		     		rulestore.remove(".clazz");
-		     	},4000);
+		     	// to query by styleText:
 		     });
 		</script>
 	
