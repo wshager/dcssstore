@@ -93,6 +93,7 @@ CssRules is a replacement for dojox/data/CssRuleStore. The model has been adapte
 
 * The query always returns the rules themselves, not an array of container items.
 * Most query attributes are no longer supported, as they can be inspected on the rules.
+* CssRules only works with browsers that support the W3C DOM CSS Level 2 cssRules property. This means Internet Explorer 8 and older are no longer supported.
 
 
 ### TODO
