@@ -3,8 +3,15 @@ define(["dojo/_base/array","dojo/_base/window"], function(array,win){
 	//		dcssstore/css
 	// summary:
 	//		This module provides css utils
-
 	var css = {
+		js2css:function(prop) {
+			return prop.replace(/([A-Z])/g, "-$1").toLowerCase();
+		},
+		css2js:function(prop) {
+		    return prop.replace(/-\w/g, function(match){
+		        return match.charAt(1).toUpperCase();
+		    });
+		},
 		findStyleSheets: function(sheets,doc){
 			// Takes an array of stylesheet paths and finds the currently loaded StyleSheet objects matching
 			// those names
