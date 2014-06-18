@@ -15,23 +15,12 @@ define([
 		return style.sheet;
 	};
 	
-	var js2css = function(prop) {
-		return prop.replace(/([A-Z])/g, "-$1").toLowerCase();
-	};
-	
-	var css2js = function(prop) {
-	    return prop.replace(/-\w/g, function(match){
-	        return match.charAt(1).toUpperCase();
-	    });
-	};
-	
 	var CssRules = declare(null, {
 		target:"", // use a single stylesheet, like a store
 		context:null, // initialize "store" with existing stylesheets
 		document:null, // document to use for CSS
-		constructor:function(options){
-			lang.mixin(this, options);
-			this._deferredLoad = new Deferred();
+		open:function(){
+			var d = new Deferred();
 			if(this.target) this.context = [this.target];
 			var gatherHandle = setInterval(lang.hitch(this,function(){
 				try{
@@ -44,11 +33,30 @@ define([
 					}
 					// Handle any fetches that have been queued while we've been waiting on the CSS files
 					// to finish
-					this._deferredLoad.resolve();
+					d.resolve();
 				}catch(e){
 					console.log("CSS loading, throws",e);
 				}
 			}),250);
+			return d;
+		},
+		query: function(query, options){
+			options = options || {};
+			query = typeof query == "string" ? {"selector":query} : query;
+			var rules = [];
+			css.rules.forEach(lang.hitch(this, function(rule, styleSheet){
+				var match = true;
+				for(var key in query){
+					var value = query[key];
+					if(!this._containsValue(rule, key, value)){
+						match = false;
+					}
+				}
+				if(match){
+					rules.push(rule);
+				}
+			}), this.resolvedContext);
+			return rules;
 		},
 		put: function(data, directives){
 			directives = directives || {};
@@ -57,46 +65,32 @@ define([
 		},
 		add: function(data, directives){
 			directives = directives || {};
-			var d = new Deferred();
-			if(!this._deferredLoad.isResolved()){
-				this._deferredLoad.then(lang.hitch(this,function(){
-					this._add(data, directives, d);
-				}));
-			}else{
-				this._add(data, directives, d);
-			}
-			return d;
-		},
-		_add: function(data, directives,d){
 			var isString = typeof data === "string";
 			var cssText = isString ? data : "";
 			var object = isString ? {} : data;
 			var selector = object.selector;
 			var style = object.style;
-			var sheet,key,prop;
+			var key,prop;
 			// ignore overwrite
 			if(directives.existingRule) directives.overwrite = false;
 			
 			if(directives.overwrite && selector) {
 				// retrieve existing rule
-				this.query(selector).then(lang.hitch(this,function(rules){
-					directives.existingRule = rules.pop();
-					directives.overwrite = false;
-					this._add(data,directives,d);
-				}));
-				return;
+				var rules = this.query(selector);
+				directives.existingRule = rules.pop();
+				directives.overwrite = false;
+				return this.add(data,directives);
 			}
 			if(directives.existingRule && directives.existingRule.selectorText===selector) {
 				if(typeof style == "string") {
 					directives.existingRule.cssText = cssText ? cssText : selector + " {" + style + "}";
 				} else if(typeof style == "object") {
 					for(key in style) {
-						prop = css2js(key);
+						prop = css.css2js(key);
 						directives.existingRule.style[prop] = style[key];
 					}
 				}
-				sheet = this.target ? this.getStyleSheet(this.target) : this.getStyleSheet(directives.styleSheetName);
-				d.resolve(data);
+				return directives.existingRule;
 			} else {
 				var declaration = "";
 				if(style) {
@@ -104,12 +98,12 @@ define([
 						declaration = style;
 					} else if(typeof style == "object") {
 						for(key in style) {
-							prop = js2css(key);
+							prop = css.js2css(key);
 							declaration += prop+":"+style[key]+";";
 						}
 					}
 				}
-				sheet = this.target ? this.getStyleSheet(this.target) : this.getStyleSheet(directives.styleSheetName);
+				var sheet = this.target ? this.getStyleSheet(this.target) : this.getStyleSheet(directives.styleSheetName);
 				cssText = cssText ? cssText : selector + " {" + declaration + "}";
 				if(!sheet) {
 					// insert new style element (href = null)
@@ -117,26 +111,14 @@ define([
 					this.resolvedContext.push(sheet);
 				}
 				if(sheet.insertRule){
-					sheet.insertRule(cssText, 0);
-					d.resolve(data);
+					return sheet.insertRule(cssText, 0);
 				} else {
-					d.reject(new Error("CSS insertRule not supported by this browser"));
+					throw new Error("CSS insertRule not supported by this browser");
 				}
 			}
 		},
 		remove: function(selector, directives){
 			directives = directives || {};
-			var d = new Deferred();
-			if(!this._deferredLoad.isResolved()){
-				this._deferredLoad.then(lang.hitch(this,function(){
-					this._remove(object, directives, d);
-				}));
-			}else{
-				this._remove(selector, directives, d);
-			}
-			return d;
-		},
-		_remove: function(selector, directives,d){
 			var sheet = this.target ? this.getStyleSheet(this.target) : this.getStyleSheet(directives.styleSheetName);
 			var properties = directives.properties ? directives.properties : directives.property ? [directives.property] : [];
 			var index = -1;
@@ -155,36 +137,6 @@ define([
 			if(index>-1) {
 				sheet.deleteRule(index);
 			}
-			d.resolve();
-		},
-		query: function(query, options){
-			options = options || {};
-			query = typeof query == "string" ? {"selector":query} : query;
-			var d = new Deferred();
-			if(!this._deferredLoad.isResolved()){
-				this._deferredLoad.then(lang.hitch(this,function(){
-					this._query(query, options, d);
-				}));
-			}else{
-				this._query(query, options, d);
-			}
-			return d;
-		},
-		_query:function(query, options, d){
-			var rules = [];
-			css.rules.forEach(lang.hitch(this, function(rule, styleSheet){
-				var match = true;
-				for(var key in query){
-					var value = query[key];
-					if(!this._containsValue(rule, key, value)){
-						match = false;
-					}
-				}
-				if(match){
-					rules.push(rule);
-				}
-			}), this.resolvedContext);
-			d.resolve(rules);
 		},
 		getStyleSheet:function(styleSheetName,context){
 			var sheet;
