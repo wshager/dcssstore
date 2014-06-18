@@ -111,7 +111,8 @@ define([
 					this.resolvedContext.push(sheet);
 				}
 				if(sheet.insertRule){
-					return sheet.insertRule(cssText, 0);
+					sheet.insertRule(cssText, 0);
+					return sheet.cssRules[0];
 				} else {
 					throw new Error("CSS insertRule not supported by this browser");
 				}
