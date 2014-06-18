@@ -72,7 +72,8 @@ define([
 	};
 	
 	return declare(null, {
-		_query:function(query, options, d){
+		query:function(query, options){
+			options = options || {};
 			var ignoreCase = options.ignoreCase;
 			var regexpList = {};
 			query = typeof query == "string" ? {"selector":query} : query;
@@ -95,7 +96,7 @@ define([
 					rules.push(rule);
 				}
 			}), this.resolvedContext);
-			d.resolve(rules);
+			return rules;
 		},
 		_containsValue: function(rule,attribute,query,regexp){
 			// regexp:
