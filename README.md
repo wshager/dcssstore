@@ -101,3 +101,4 @@ CssRules is a replacement for dojox/data/CssRuleStore. The model has been adapte
 
 * Add _PersistMixin to be able to save the CSS target file to a remote location.
 * Add other types of CSS stores to support more specific subjects like classes, animations or transitions.
+* Create an observable CSS store that will emit events whenever a style changes for an element (either through setting the element style or CSSRule)
