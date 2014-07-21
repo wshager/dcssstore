@@ -7,13 +7,24 @@ define([
 	"./css"
 ], function(declare,win,lang,array,Deferred,css){
 
-	var createSheet = function(doc) {
+	function createSheet(doc) {
 		doc = doc || win.doc;
 		var style = doc.createElement("style");
 		style.appendChild(doc.createTextNode(""));
 		doc.head.appendChild(style);
 		return style.sheet;
-	};
+	}
+	
+	function createQuery(updateTotal) {
+		return function query () {
+			var newCollection = this.inherited(arguments),
+				queryer = newCollection.queryLog[newCollection.queryLog.length - 1].queryer;
+
+			var data = newCollection.data = queryer(this.data);
+			newCollection.total = updateTotal ? data.length : this.total;
+			return newCollection;
+		};
+	}
 	
 	var CssRules = declare(null, {
 		target:"", // use a single stylesheet, like a store
