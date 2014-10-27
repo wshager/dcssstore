@@ -49,7 +49,13 @@ define(["dojo/_base/array","dojo/_base/window"], function(array,win){
 					});
 				}
 				//iterate across rules in the stylesheet
-				return array.some(styleSheet.cssRules, function(rule){
+				var rules = [];
+				try {
+					rules = styleSheet.cssRules;
+				} catch(err) {
+					console.warn("Not allowed to read cssRules for stylesheet "+styleSheet.href);
+				}
+				return array.some(rules, function(rule){
 					if(rule.type && rule.type === 3 && _processSS(rule.styleSheet)){// CSSImportRule (firefox)
 						return true;
 					}
@@ -72,7 +78,13 @@ define(["dojo/_base/array","dojo/_base/window"], function(array,win){
 			var _processSS = function(styleSheet){
 				ret.push(styleSheet);
 				//iterate across rules in the stylesheet
-				array.forEach(styleSheet.cssRules, function(rule){
+				var rules = [];
+				try {
+					rules = styleSheet.cssRules;
+				} catch(err) {
+					console.warn("Not allowed to read cssRules for stylesheet "+styleSheet.href);
+				}
+				array.forEach(rules, function(rule){
 					if(rule.type && rule.type === 3){// CSSImportRule
 						_processSS(rule.styleSheet);
 					}
@@ -89,7 +101,13 @@ define(["dojo/_base/array","dojo/_base/window"], function(array,win){
 		if(context){
 			array.forEach(context,function(styleSheet){
 				//iterate across rules in the stylesheet
-				array.forEach(styleSheet.cssRules, function(rule){
+				var rules = [];
+				try {
+					rules = styleSheet.cssRules;
+				} catch(err) {
+					console.warn("Not allowed to read cssRules for stylesheet "+styleSheet.href);
+				}
+				array.forEach(rules, function(rule){
 					if(!rule.type || rule.type !== 3){// apply fn to current rule
 						fn.call(this, rule, styleSheet);
 					}
