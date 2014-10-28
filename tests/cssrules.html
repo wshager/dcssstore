@@ -10,15 +10,20 @@
 		     	"dojo/_base/declare",
 		     	"dcssstore/CssRules",
 		     	"dcssstore/_QueryMixin",
-		     	"dcssstore/_PatternMixin"
-		     ], function(declare,CssRules,_QueryMixin,_PatternMixin){
+		     	"dcssstore/_PatternMixin",
+		     	"dojo/query"
+		     ], function(declare,CssRules,_QueryMixin,_PatternMixin,query){
 		     	var rulestore = new declare([CssRules,_QueryMixin,_PatternMixin])({
 		     		target:"styles.css"
 		     	});
 		     	// explicitly load store:
 		     	rulestore.open().then(function(){
 		     		var rules = rulestore.query({"cssText":"*color*"});
-			     	console.log(rules);
+		     		var els = rules.map(function(rule){
+		     			console.log(rule.selectorText)
+						return document.querySelectorAll(rule.selectorText)[0];
+					});
+		     		console.log(els);
 			     	// to add a style to the document:
 			     	var rule = rulestore.put({selector:".clazz",style:{
 			     		color:"red",
@@ -42,6 +47,8 @@
 	
 	</head>
 	<body>
+		<p class="test">bbla1</p>
+		<p id="test">bbla2</p>
 		<p class="clazz">dcssstore/CssRules Test!</p>
 	</body>
 </html>

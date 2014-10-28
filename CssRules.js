@@ -30,14 +30,18 @@ define([
 		target:"", // use a single stylesheet, like a store
 		context:null, // initialize "store" with existing stylesheets
 		document:null, // document to use for CSS
+		constructor:function(params) {
+			lang.mixin(this,params);
+		},
 		open:function(){
 			var d = new Deferred();
+			var self = this;
 			if(this.target) this.context = [this.target];
-			var gatherHandle = setInterval(lang.hitch(this,function(){
+			var gatherHandle = setInterval(function(){
 				try{
 					// Funkiness here is due to css that may still be loading.  This throws an DOM Access
 					// error if css isnt completely loaded.
-					this.resolvedContext = css.determineContext(this.context,this.document);
+					self.resolvedContext = css.determineContext(self.context,self.document);
 					if(gatherHandle){
 						clearInterval(gatherHandle);
 						gatherHandle = null;
@@ -48,7 +52,7 @@ define([
 				}catch(e){
 					console.log("CSS loading, throws",e);
 				}
-			}),250);
+			},250);
 			return d;
 		},
 		query: function(query, options){
@@ -98,7 +102,7 @@ define([
 				} else if(typeof style == "object") {
 					for(key in style) {
 						prop = css.css2js(key);
-						directives.existingRule.style[prop] = style[key];
+						directives.existingRule.style.setProperty(prop,style[key]);
 					}
 				}
 				return directives.existingRule;
@@ -153,6 +157,7 @@ define([
 		},
 		getStyleSheet:function(styleSheetName,context){
 			var sheet;
+			styleSheetName = styleSheetName || this.target;
 			context = context || this.resolvedContext;
 			for(var i=0;i<context.length;i++){
 				if(context[i].href==styleSheetName || context[i].href.indexOf(styleSheetName)>-1) {
