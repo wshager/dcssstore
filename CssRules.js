@@ -85,7 +85,7 @@ define([
 			var object = isString ? {} : data;
 			var selector = object.selector;
 			var style = object.style;
-			var key,prop;
+			var keys,prop,i;
 			// ignore overwrite
 			if(directives.existingRule) directives.overwrite = false;
 			
@@ -100,9 +100,18 @@ define([
 				if(typeof style == "string") {
 					directives.existingRule.cssText = cssText ? cssText : selector + " {" + style + "}";
 				} else if(typeof style == "object") {
-					for(key in style) {
-						prop = css.css2js(key);
-						directives.existingRule.style.setProperty(prop,style[key]);
+					if(style instanceof CSSStyleDeclaration) {
+						// native style object (clone it)
+						for(i=0,l=style.length;i<l;i++) {
+							prop = style.item(i);
+							directives.existingRule.style.setProperty(prop,style.getPropertyValue(prop));
+						}
+					} else {
+						// generic object
+						keys = Object.keys(style);
+						for(i=0,l=keys.length;i<l;i++) {
+							directives.existingRule.style.setProperty(keys[i],style[keys[i]]);
+						}
 					}
 				}
 				return directives.existingRule;
@@ -112,9 +121,16 @@ define([
 					if(typeof style == "string") {
 						declaration = style;
 					} else if(typeof style == "object") {
-						for(key in style) {
-							prop = css.js2css(key);
-							declaration += prop+":"+style[key]+";";
+						if(style instanceof CSSStyleDeclaration) {
+							// native style object (rewrite it)
+							declaration = style.cssText;
+						} else {
+							// generic object
+							keys = Object.keys(style);
+							for(i=0,l=keys.length;i<l;i++) {
+								prop = css.js2css(keys[i]);
+								declaration += prop+":"+style[keys[i]]+";";
+							}
 						}
 					}
 				}
@@ -137,21 +153,23 @@ define([
 		remove: function(selector, directives){
 			directives = directives || {};
 			var sheet = this.target ? this.getStyleSheet(this.target) : this.getStyleSheet(directives.styleSheetName);
-			var properties = directives.properties ? directives.properties : directives.property ? [directives.property] : [];
-			var index = -1;
-			for(var i=0;i<sheet.cssRules.length;i++) {
+			var properties = directives.properties ? directives.properties : directives.property ? [directives.property] : null;
+			var rules = [];
+			for(var i=0,l=sheet.cssRules.length;i<l;i++) {
 				if(sheet.cssRules[i].selectorText===selector) {
-					if(properties.length>0) {
-						array.forEach(properties,function(property){
-							sheet.cssRules[i].style[property] = "";
-						});
-					} else {
-						index = i;
-					}
-					break;
+					rules.push({rule:sheet.cssRules[i],index:i});
 				}
 			}
-			if(index>-1) {
+			if(rules.length>1) {
+				// TODO what to do?
+			}
+			var last = rules.pop();
+			var rule = last.rule;
+			var index = last.index;
+			if(properties && properties.length>0) {
+				for(var j=0,z=properties.length;j<z;j++) rule.style.removeProperty(properties[j]);
+			}
+			if(!properties || !rule.style.length) {
 				sheet.deleteRule(index);
 			}
 		},
