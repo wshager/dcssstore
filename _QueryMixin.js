@@ -9,7 +9,7 @@ define([
 			if(attribute === "selector"){
 				value = rule["selectorText"];
 				if(value && lang.isString(value)){
-					value = value.split(",");
+					value = value.replace(/\s*(,)\s*/g, "$1").split(",");
 				}
 			/*}else if(attribute === "classes"){
 				// parse out all available class names
