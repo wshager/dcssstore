@@ -5,7 +5,7 @@ define([
 	"./css"
 ], function(declare,lang,array,css){
 
-	var patternToRegExp = function(/*String*/pattern, /*boolean?*/ ignoreCase){
+	var patternToRegExp = function(/*String*/val, /*boolean?*/ ignoreCase){
 		// summary:
 		//		Helper function to convert a simple pattern to a regular expression for matching.
 		// description:
@@ -32,6 +32,7 @@ define([
 		//		By default, it is assumed case sensitive.
 
 		var rxp = "^";
+		var pattern = val.replace(/\s*(\*?\$\^\/+.\|\(\){}\[\],)\s*/g, "{$1}");
 		var c = null;
 		for(var i = 0; i < pattern.length; i++){
 			c = pattern.charAt(i);
@@ -45,6 +46,8 @@ define([
 					rxp += ".*"; break;
 				case '?':
 					rxp += "."; break;
+				case ',':
+					rxp += "|"; break;
 				case '$':
 				case '^':
 				case '/':
@@ -81,6 +84,8 @@ define([
 				var value = query[key];
 				if(typeof value === "string"){
 					regexpList[key] = patternToRegExp(value, ignoreCase);
+				} else if(value instanceof RegExp) {
+					regexpList[key] = value;
 				}
 			}
 			var rules = [];
