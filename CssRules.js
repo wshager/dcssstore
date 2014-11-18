@@ -63,9 +63,16 @@ define([
 				var match = true;
 				for(var key in query){
 					var value = query[key];
-					if(!this._containsValue(rule, key, value)){
-						match = false;
-					}
+					// parse comma-separated values
+					//var values = [value];
+					//if(value.indexOf(",")>-1) {
+					//	values = value.replace(/\s*(,)\s*/g, "$1").split(",");
+					//}
+					//array.forEach(values,function(value) {
+						if(!this._containsValue(rule, key, value)){
+							match = false;
+						}
+					//},this);
 				}
 				if(match){
 					rules.push(rule);
@@ -164,6 +171,7 @@ define([
 				// TODO what to do?
 			}
 			var last = rules.pop();
+			if(!last) return;
 			var rule = last.rule;
 			var index = last.index;
 			if(properties && properties.length>0) {
@@ -202,7 +210,7 @@ define([
 			if(attribute === "selector"){
 				value = rule["selectorText"];
 				if(value && typeof value == "string"){
-					value = value.split(",");
+					value = value.replace(/\s*(,)\s*/g, "$1").split(",");
 				}
 			} else {
 				value = [];
